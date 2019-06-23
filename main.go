@@ -13,14 +13,6 @@ import (
 )
 
 var (
-	host     = os.Getenv("DB_HOST")
-	dbport   = os.Getenv("DB_PORT")
-	user     = os.Getenv("DB_USER")
-	password = os.Getenv("DB_PASSWORD")
-	dbname   = os.Getenv("DB_NAME")
-)
-
-var (
 	tplHome *template.Template
 )
 
@@ -32,8 +24,14 @@ type Applicant struct{
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
+	applicant := Applicant{
+		Name: "Adam Carter",
+		Mobile: "07921806884",
+		Position: "Senior Stylist",
+	}
+
 	w.Header().Set("Content-Type", "text/html")
-	if err := tplHome.Execute(w, nil); err != nil {
+	if err := tplHome.Execute(w, applicant); err != nil {
 		panic(err)
 	}
 }
@@ -46,6 +44,14 @@ func init() {
 }
 
 func main() {
+	var (
+		host     = os.Getenv("DB_HOST")
+		dbport   = os.Getenv("DB_PORT")
+		user     = os.Getenv("DB_USER")
+		password = os.Getenv("DB_PASSWORD")
+		dbname   = os.Getenv("DB_NAME")
+	)
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		log.Fatal("$PORT must be set")
@@ -56,7 +62,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", home)
 
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s "+
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, dbport, user, password, dbname)
 	db, err := gorm.Open("postgres", psqlInfo)
