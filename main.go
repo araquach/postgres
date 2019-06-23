@@ -5,17 +5,19 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	"github.com/joho/godotenv"
 	"html/template"
 	"log"
 	"net/http"
+	"os"
 )
 
-const (
-	host     = "localhost"
-	dbport     = 5432
-	user     = "adam-macbook"
-	password = "Blonde123"
-	dbname   = "postgres"
+var (
+	host     = os.Getenv("DB_HOST")
+	dbport   = os.Getenv("DB_PORT")
+	user     = os.Getenv("DB_USER")
+	password = os.Getenv("DB_PASSWORD")
+	dbname   = os.Getenv("DB_NAME")
 )
 
 var (
@@ -36,9 +38,15 @@ func home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func init() {
+	// loads values from .env into the system
+	if err := godotenv.Load(); err != nil {
+		log.Print("No .env file found")
+	}
+}
+
 func main() {
-	// port := os.Getenv("PORT")
-	   port := "5050"
+	port := os.Getenv("PORT")
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
