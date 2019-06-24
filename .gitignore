@@ -136,6 +136,8 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 .idea/workspace.xml
 
+main_backup.go
 node_modules/node_modules/
 package.json
 .env
+backup/main_backup.go
