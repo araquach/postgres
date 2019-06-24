@@ -66,6 +66,8 @@ func create(w http.ResponseWriter, r *http.Request) {
 	ap.Position = r.FormValue("position")
 
 	db.Create(&ap)
+	db.Close()
+
 }
 
 func init() {
@@ -77,14 +79,10 @@ func init() {
 
 func main() {
 
-	db := dbConn()
-
 	port := os.Getenv("PORT")
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
-
-	db.LogMode(true)
 
 	tplHome = template.Must(template.ParseFiles("templates/index.gohtml"))
 	tplCreate = template.Must(template.ParseFiles("templates/create.gohtml"))
@@ -92,9 +90,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", home).Methods("GET")
 	r.HandleFunc("/apply", apply).Methods("GET")
-	r.HandleFunc("/create", create).Methods("POST")
-
-	db.AutoMigrate(&Applicant{})
+	r.HandleFunc("/apply", create).Methods("POST")
 
 	http.ListenAndServe(":" + port, r)
 }
