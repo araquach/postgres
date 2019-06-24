@@ -71,7 +71,7 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", home).Methods("GET")
 	r.HandleFunc("/apply", apply).Methods("GET")
-	r.HandleFunc("/apply", apply).Methods("POST")
+	//r.HandleFunc("/apply", apply).Methods("POST")
 
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
