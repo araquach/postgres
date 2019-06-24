@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gorilla/mux"
+	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
 	"html/template"
 	"log"
@@ -15,10 +17,29 @@ var (
 )
 
 func init() {
+	var (
+		dbhost     = os.Getenv("DB_HOST")
+		dbport   = os.Getenv("DB_PORT")
+		dbuser     = os.Getenv("DB_USER")
+		dbpassword = os.Getenv("DB_PASSWORD")
+		dbname   = os.Getenv("DB_NAME")
+	)
+
 	// loads values from .env into the system
 	if err := godotenv.Load(); err != nil {
 		log.Print("No .env file found")
 	}
+
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		dbhost, dbport, dbuser, dbpassword, dbname)
+	db, err := gorm.Open("postgres", psqlInfo)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+	db.LogMode(true)
+
 }
 
 func home(w http.ResponseWriter, r *http.Request) {
