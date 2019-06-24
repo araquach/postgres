@@ -44,8 +44,6 @@ func apply(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func store()
-
 func init() {
 	// loads values from .env into the system
 	if err := godotenv.Load(); err != nil {
