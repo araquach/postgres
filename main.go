@@ -17,6 +17,13 @@ var (
 	tplCreate *template.Template
 )
 
+type Applicant struct{
+	gorm.Model
+	Name string
+	Mobile string
+	Position string
+}
+
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	if err := tplHome.Execute(w, nil); err != nil {
@@ -71,6 +78,7 @@ func main() {
 	r.HandleFunc("/", home).Methods("GET")
 	r.HandleFunc("/create", create).Methods("GET")
 
+	db.AutoMigrate(&Applicant{})
 
 	http.ListenAndServe(":" + port, r)
 }
