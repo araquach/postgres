@@ -69,8 +69,6 @@ func main() {
 	defer db.Close()
 	db.LogMode(true)
 
-
-
 	tplHome = template.Must(template.ParseFiles("templates/index.gohtml"))
 	tplCreate = template.Must(template.ParseFiles("templates/create.gohtml"))
 
