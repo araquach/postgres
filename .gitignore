@@ -141,3 +141,4 @@ node_modules/node_modules/
 package.json
 .env
 backup/main_backup.go
+.env
