@@ -28,6 +28,13 @@ func home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func create(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	if err := tplCreate.Execute(w, nil); err != nil {
+		panic(err)
+	}
+}
+
 func main() {
 
 	port := os.Getenv("PORT")
@@ -36,9 +43,12 @@ func main() {
 	}
 
 	tplHome = template.Must(template.ParseFiles("templates/index.gohtml"))
+	tplCreate = template.Must(template.ParseFiles("templates/create.gohtml"))
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", home).Methods("GET")
+	r.HandleFunc("/create", create).Methods("GET")
+
 
 	http.ListenAndServe(":" + port, r)
 }
