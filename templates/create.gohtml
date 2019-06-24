@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Postgres DB Practice</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+</head>
+<body>
+<section class="section">
+    <div class="container">
+        <h1 class="title">
+            Show your interest
+        </h1>
+        <form action="/apply" method="post">
+            <div class="field">
+                <label class="label">Name</label>
+                <div class="control">
+                    <input class="input" type="text" placeholder="Your Name">
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Mobile Number</label>
+                <div class="control">
+                    <input class="input" type="text" placeholder="Your Mobile Number">
+                </div>
+            </div>
+            <div class="field">
+                <label class="label">Current Position</label>
+                <div class="control">
+                    <div class="select">
+                        <select>
+                            <option value="default">Please select</option>
+                            <option value="employed">Employed Stylist</option>
+                            <option value="chair renter">Chair Renter</option>
+                            <option value="mobile">Mobile Hairdresser</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="field">
+                <div class="control">
+                    <button class="button is-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</section>
+</body>
+</html>

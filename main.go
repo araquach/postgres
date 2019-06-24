@@ -14,6 +14,7 @@ import (
 
 var (
 	tplHome *template.Template
+	tplCreate *template.Template
 )
 
 type Applicant struct{
@@ -25,7 +26,7 @@ type Applicant struct{
 
 func home(w http.ResponseWriter, r *http.Request) {
 	applicant := Applicant{
-		Name: "Adam Carter",
+		Name: "Izzy Lamb",
 		Mobile: "07921806884",
 		Position: "Senior Stylist",
 	}
@@ -35,6 +36,15 @@ func home(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 }
+
+func apply(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	if err := tplCreate.Execute(w, nil); err != nil {
+		panic(err)
+	}
+}
+
+func store()
 
 func init() {
 	// loads values from .env into the system
@@ -58,9 +68,12 @@ func main() {
 	}
 
 	tplHome = template.Must(template.ParseFiles("templates/index.gohtml"))
+	tplCreate = template.Must(template.ParseFiles("templates/create.gohtml"))
 
 	r := mux.NewRouter()
-	r.HandleFunc("/", home)
+	r.HandleFunc("/", home).Methods("GET")
+	r.HandleFunc("/apply", apply).Methods("GET")
+	r.HandleFunc("/apply", apply).Methods("POST")
 
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
@@ -74,6 +87,5 @@ func main() {
 
 	db.AutoMigrate(&Applicant{})
 
-	http.Handle("/", r)
 	http.ListenAndServe(":" + port, r)
 }
