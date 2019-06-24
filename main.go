@@ -24,6 +24,25 @@ type Applicant struct{
 	Position string
 }
 
+func dbConn() (db *gorm.DB) {
+	dbhost     := os.Getenv("DB_HOST")
+	dbport     := os.Getenv("DB_PORT")
+	dbuser     := os.Getenv("DB_USER")
+	dbpassword := os.Getenv("DB_PASSWORD")
+	dbname     := os.Getenv("DB_NAME")
+
+	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
+		"password=%s dbname=%s sslmode=disable",
+		dbhost, dbport, dbuser, dbpassword, dbname)
+
+	db, err := gorm.Open("postgres", psqlInfo)
+	if err != nil {
+		panic(err)
+	}
+
+	return db
+}
+
 func home(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	if err := tplHome.Execute(w, nil); err != nil {
@@ -31,11 +50,22 @@ func home(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func create(w http.ResponseWriter, r *http.Request) {
+func apply(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	if err := tplCreate.Execute(w, nil); err != nil {
 		panic(err)
 	}
+}
+
+func create(w http.ResponseWriter, r *http.Request) {
+	db := dbConn()
+
+	ap := Applicant{}
+	ap.Name = r.FormValue("name")
+	ap.Mobile = r.FormValue("mobile")
+	ap.Position = r.FormValue("position")
+
+	db.Create(&ap)
 }
 
 func init() {
@@ -46,27 +76,14 @@ func init() {
 }
 
 func main() {
-	var (
-		dbhost     = os.Getenv("DB_HOST")
-		dbport   = os.Getenv("DB_PORT")
-		dbuser     = os.Getenv("DB_USER")
-		dbpassword = os.Getenv("DB_PASSWORD")
-		dbname   = os.Getenv("DB_NAME")
-	)
+
+	db := dbConn()
 
 	port := os.Getenv("PORT")
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
 
-	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
-		"password=%s dbname=%s sslmode=disable",
-		dbhost, dbport, dbuser, dbpassword, dbname)
-	db, err := gorm.Open("postgres", psqlInfo)
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
 	db.LogMode(true)
 
 	tplHome = template.Must(template.ParseFiles("templates/index.gohtml"))
@@ -74,7 +91,8 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", home).Methods("GET")
-	r.HandleFunc("/create", create).Methods("GET")
+	r.HandleFunc("/apply", apply).Methods("GET")
+	r.HandleFunc("/create", create).Methods("POST")
 
 	db.AutoMigrate(&Applicant{})
 
