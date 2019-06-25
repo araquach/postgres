@@ -142,4 +142,3 @@ package.json
 .env
 backup/main_backup.go
 .env
-.env
