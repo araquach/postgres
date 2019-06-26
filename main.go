@@ -68,6 +68,8 @@ func create(w http.ResponseWriter, r *http.Request) {
 	db.Create(&ap)
 	db.Close()
 
+	http.Redirect(w, r, "/", http.StatusSeeOther)
+	return
 }
 
 func init() {
@@ -83,6 +85,9 @@ func main() {
 	if port == "" {
 		log.Fatal("$PORT must be set")
 	}
+
+	db := dbConn()
+	db.AutoMigrate(&Applicant{})
 
 	tplHome = template.Must(template.ParseFiles("templates/index.gohtml"))
 	tplCreate = template.Must(template.ParseFiles("templates/create.gohtml"))
